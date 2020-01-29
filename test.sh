@@ -24,8 +24,10 @@ cd testdata
 
 run_test "no_gonforce_file" 1
 run_test "invalid_gonforce_file" 1
+run_test "using_not_allowed_lib_default" 1
 run_test "valid" 0
 
 cd ..
 
 rm gonforce
+echo "All tests passed..."
