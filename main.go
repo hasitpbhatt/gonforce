@@ -21,10 +21,11 @@ type enforcer struct {
 	//	Default rules contain the default allowed and not allowed packages
 	//	e.g.
 	//	default:
-	//		allow:
+	//		type: whitelist
+	//		imports:
+	//			-	gopkg.in
+	//		except:
 	//			-	gopkg.in/yaml.v2
-	//		disallow:
-	//			-	gopkg.in/yaml.v1
 	Default models.Rules `yaml:"default"`
 }
 
@@ -48,7 +49,7 @@ func main() {
 
 	err = process(dir)
 	if err != nil {
-		log.Fatalf("The imports aren't as per the gonforce")
+		log.Fatalf("The imports aren't as per the gonforce %v", err)
 	}
 }
 
@@ -76,11 +77,49 @@ func process(dir string) error {
 	return nil
 }
 
-func isValid(str, path string) error {
-	for _, disallowedImport := range _enforcerConfig.Default.Disallowed {
-		if strings.HasPrefix(path[1:], disallowedImport) {
-			return fmt.Errorf("%v used in %v", disallowedImport, str)
+func isValid(fpath, imp string) error {
+	except := _enforcerConfig.Default.Except
+	imports := _enforcerConfig.Default.Imports
+
+	if _enforcerConfig.Default.Type == "whitelist" {
+		matched, isException := matches(except, imports, imp)
+		if matched == "" {
+			return fmt.Errorf("%v not whitelisted for %v", imp, fpath)
 		}
+		if isException {
+			return fmt.Errorf("%v used in %v", imp, fpath)
+		}
+		return nil
+	}
+
+	matched, isAllowed := matches(except, imports, imp)
+	if matched != "" && !isAllowed {
+		return fmt.Errorf("%v not allowed for %v", imp, fpath)
 	}
 	return nil
+}
+
+func matches(set1, set2 []string, path string) (matched string, isSet1 bool) {
+	for _, constraint := range set1 {
+		if satisfies(path, constraint) {
+			return constraint, true
+		}
+	}
+
+	for _, constraint := range set2 {
+		if satisfies(path, constraint) {
+			return constraint, false
+		}
+	}
+
+	return "", false
+}
+
+func satisfies(path, constraint string) bool {
+	fmt.Println(path, constraint)
+	path = strings.Trim(path, "\"")
+	if constraint == path {
+		return true
+	}
+	return strings.HasPrefix(path+"/", constraint)
 }

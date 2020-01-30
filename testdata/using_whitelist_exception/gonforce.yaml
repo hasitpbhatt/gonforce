@@ -1,8 +1,9 @@
 package: github.com/hasitpbhatt/gonforce
 
 default:
-  type: blacklist
+  type: whitelist
   imports:
+    - fmt
     - gopkg.in
   except:
     - gopkg.in/yaml.v2

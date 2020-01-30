@@ -24,7 +24,10 @@ cd testdata
 
 run_test "no_gonforce_file" 1
 run_test "invalid_gonforce_file" 1
-run_test "using_not_allowed_lib_default" 1
+run_test "using_blacklisted_import" 1
+run_test "using_not_whitelisted_import" 1
+run_test "using_whitelist_exception" 1
+run_test "failed_whitelist_exception" 1
 run_test "valid" 0
 
 cd ..
