@@ -6,7 +6,6 @@ import (
 	"go/token"
 	"log"
 	"os"
-	"strings"
 
 	"github.com/hasitpbhatt/gonforce/models"
 	yaml "gopkg.in/yaml.v2"
@@ -26,7 +25,7 @@ type enforcer struct {
 	//			-	gopkg.in
 	//		except:
 	//			-	gopkg.in/yaml.v2
-	Default models.Rules `yaml:"default"`
+	Default models.PackageRule `yaml:"default"`
 }
 
 func main() {
@@ -40,6 +39,10 @@ func main() {
 	d.SetStrict(true)
 	if err := d.Decode(&_enforcerConfig); err != nil {
 		log.Fatalf("Unable to decode gonforce.yaml: %v", err)
+	}
+
+	if err := _enforcerConfig.Default.Validate(); err != nil {
+		log.Fatalf("Invalid gonforce.yaml: %v", err)
 	}
 
 	dir, err := os.Getwd()
@@ -62,9 +65,9 @@ func process(dir string) error {
 
 	errorFound := false
 	for _, pkg := range pkgs {
-		for fileString, file := range pkg.Files {
+		for fpath, file := range pkg.Files {
 			for _, imp := range file.Imports {
-				if err := isValid(fileString, imp.Path.Value); err != nil {
+				if err := _enforcerConfig.Default.IsValidImport(fpath, imp.Path.Value); err != nil {
 					errorFound = true
 					fmt.Println(err)
 				}
@@ -75,51 +78,4 @@ func process(dir string) error {
 		return fmt.Errorf("validation failed in %v", dir)
 	}
 	return nil
-}
-
-func isValid(fpath, imp string) error {
-	except := _enforcerConfig.Default.Except
-	imports := _enforcerConfig.Default.Imports
-
-	if _enforcerConfig.Default.Type == "whitelist" {
-		matched, isException := matches(except, imports, imp)
-		if matched == "" {
-			return fmt.Errorf("%v not whitelisted for %v", imp, fpath)
-		}
-		if isException {
-			return fmt.Errorf("%v used in %v", imp, fpath)
-		}
-		return nil
-	}
-
-	matched, isAllowed := matches(except, imports, imp)
-	if matched != "" && !isAllowed {
-		return fmt.Errorf("%v not allowed for %v", imp, fpath)
-	}
-	return nil
-}
-
-func matches(set1, set2 []string, path string) (matched string, isSet1 bool) {
-	for _, constraint := range set1 {
-		if satisfies(path, constraint) {
-			return constraint, true
-		}
-	}
-
-	for _, constraint := range set2 {
-		if satisfies(path, constraint) {
-			return constraint, false
-		}
-	}
-
-	return "", false
-}
-
-func satisfies(path, constraint string) bool {
-	fmt.Println(path, constraint)
-	path = strings.Trim(path, "\"")
-	if constraint == path {
-		return true
-	}
-	return strings.HasPrefix(path+"/", constraint)
 }
