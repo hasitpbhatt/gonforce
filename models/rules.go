@@ -104,7 +104,6 @@ func matches(set1, set2 []string, path string) (matched string, isSet1 bool) {
 }
 
 func satisfies(path, constraint string) bool {
-	fmt.Println(path, constraint)
 	path = strings.Trim(path, "\"")
 	if constraint == path {
 		return true

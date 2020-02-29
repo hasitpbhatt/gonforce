@@ -6,3 +6,11 @@ default:
     - gopkg.in
   except:
     - gopkg.in/yaml.v2
+
+rules:
+  - name: models
+    rule:
+      type: blacklist
+      imports:
+        - github.com/hasitpbhatt/gonforce
+

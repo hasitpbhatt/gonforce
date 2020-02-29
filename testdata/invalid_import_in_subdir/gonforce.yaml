@@ -10,6 +10,6 @@ default:
 rules:
   - name: models/random
     rule:
-      type: whitelist
+      type: blacklist
       imports:
-        - path/filepath
+        - strings
