@@ -29,6 +29,7 @@ run_test () {
 execute "go test ./..."
 execute "golint ./..."
 execute "goimports -w -d $(find . -type f -name '*.go' -not -path './testdata/*')"
+execute "gofmt -w -d $(find . -type f -name '*.go' -not -path './testdata/*')"
 execute "go run main.go"
 
 pwd=$(pwd)
@@ -43,6 +44,7 @@ run_test "using_whitelist_exception" 1
 run_test "failed_whitelist_exception" 1
 run_test "invalid_rule_structure" 1
 run_test "invalid_import_in_subdir" 1
+run_test "subfolder_using_invalid_import" 1
 run_test "valid" 0
 
 rm gonforce

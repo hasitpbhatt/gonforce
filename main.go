@@ -9,8 +9,9 @@ import (
 	"os"
 	"path/filepath"
 
+	"gopkg.in/yaml.v2"
+
 	"github.com/hasitpbhatt/gonforce/models"
-	yaml "gopkg.in/yaml.v2"
 )
 
 var _enforcerConfig enforcer
@@ -87,12 +88,35 @@ func processRoot() error {
 	}
 
 	for _, rule := range _enforcerConfig.Rules {
-		err := process(filepath.Join(dir, rule.Name), rule.PackageRule)
+		err := processRecursively(filepath.Join(dir, rule.Name), rule.PackageRule)
 		if err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+func processRecursively(dir string, pr models.PackageRule) error {
+	if err := process(dir, pr); err != nil {
+		return err
+	}
+	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() {
+			return nil
+		}
+		p, err := filepath.Abs(path)
+		if err != nil {
+			return err
+		}
+		if err := process(p, pr); err != nil {
+			return err
+		}
+		return nil
+	})
+	return err
 }
 
 func process(dir string, pr models.PackageRule) error {
