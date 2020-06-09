@@ -9,15 +9,15 @@ import (
 type RuleType string
 
 const (
-	// RuleTypeWhitelist showcases the imports mentioned
-	// are whitelisted and all other (except "except" ones)
+	// RuleTypeAllowlist showcases the imports mentioned
+	// are allowlisted and all other (except "except" ones)
 	// should not be used in the package
-	RuleTypeWhitelist RuleType = "whitelist"
+	RuleTypeAllowlist RuleType = "allowlist"
 
-	// RuleTypeBlacklist showcases the imports mentioned
-	// are blacklisted and all other (including the "except" ones)
+	// RuleTypeBlocklist showcases the imports mentioned
+	// are blocklisted and all other (including the "except" ones)
 	// can be used in the package
-	RuleTypeBlacklist RuleType = "blacklist"
+	RuleTypeBlocklist RuleType = "blocklist"
 )
 
 // PackageRule contains allowed and disallowed import path prefixes
@@ -40,7 +40,7 @@ func (r PackageRule) Validate() error {
 
 func validateType(t RuleType) error {
 	switch t {
-	case RuleTypeBlacklist, RuleTypeWhitelist:
+	case RuleTypeBlocklist, RuleTypeAllowlist:
 		return nil
 	default:
 		return fmt.Errorf("Invalid rule type %v", t)
@@ -69,10 +69,10 @@ func (r PackageRule) IsValidImport(fpath, imp string) error {
 	except := r.Except
 	imports := r.Imports
 
-	if r.Type == RuleTypeWhitelist {
+	if r.Type == RuleTypeAllowlist {
 		matched, isException := matches(except, imports, imp)
 		if matched == "" {
-			return fmt.Errorf("%v not whitelisted for %v", imp, fpath)
+			return fmt.Errorf("%v not allowlisted for %v", imp, fpath)
 		}
 		if isException {
 			return fmt.Errorf("%v used in %v", imp, fpath)

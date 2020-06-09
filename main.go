@@ -29,7 +29,7 @@ type enforcer struct {
 	//	Default rules contain the default allowed and not allowed packages
 	//	e.g.
 	//	default:
-	//		type: whitelist
+	//		type: allowlist
 	//		imports:
 	//			-	gopkg.in
 	//		except:

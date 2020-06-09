@@ -1,6 +1,6 @@
 package: github.com/hasitpbhatt/gonforce
 
 default:
-  type: whitelist
+  type: allowlist
   imports:
     - gopkg.in/yaml.v2

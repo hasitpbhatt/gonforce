@@ -1,7 +1,7 @@
 package: github.com/hasitpbhatt/gonforce
 
 default:
-  type: blacklist
+  type: blocklist
   imports:
     - gopkg.in
   except:
@@ -10,6 +10,6 @@ default:
 rules:
   - name: models/random
     rule:
-      type: whitelist
+      type: allowlist
       imports:
         - path/filepath

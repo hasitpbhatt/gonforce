@@ -11,12 +11,12 @@ Once installed, use gonforce command in the package containing "gonforce.yaml"
 # Samples
 Sample files may look something like the following
 
-1. Default Blacklist
+1. Default Blocklist
 ```
 package: github.com/hasitpbhatt/gonforce
 
 default:
-  type: blacklist
+  type: blocklist
   imports:
     - fmt
     - gopkg.in
@@ -24,14 +24,14 @@ default:
     - gopkg.in/yaml.v2
 ```
 
-Here we are ensuring the package can't use any imports starting with "gopkg.in" or "fmt", but with an exception "gopkg.in/yaml.v2" which would not be allowed otherwise due to "gopkg.in" being one of the blacklisted imports.
+Here we are ensuring the package can't use any imports starting with "gopkg.in" or "fmt", but with an exception "gopkg.in/yaml.v2" which would not be allowed otherwise due to "gopkg.in" being one of the blocklisted imports.
 
-2. Default Whitelist
+2. Default Allowlist
 ```
 package: github.com/hasitpbhatt/gonforce
 
 default:
-  type: whitelist
+  type: allowlist
   imports:
     - fmt
     - gopkg.in
@@ -46,7 +46,7 @@ Here we are ensuring only imports that can be used should always start with "fmt
 package: github.com/hasitpbhatt/gonforce
 
 default:
-  type: whitelist
+  type: allowlist
   imports:
     - fmt
     - gopkg.in
@@ -57,7 +57,7 @@ default:
 rules:
   - name: models
     rule:
-      type: blacklist
+      type: blocklist
       imports:
         - github.com/hasitpbhatt/gonforce/controllers # models can't import controller package
 
@@ -65,7 +65,7 @@ rules:
   # on controllers at this moment
   # - name: controllers
   #   rule:
-  #     type: blacklist
+  #     type: blocklist
 ```
 
-Here, along with ensuring the we only use specific packages inside the default, using blacklists we ensure that we don't endup calling an subpackage of controller inside models package. And controllers doesn't have any extra restrictions other than already imposed by default package rule.
+Here, along with ensuring the we only use specific packages inside the default, using blocklists we ensure that we don't endup calling an subpackage of controller inside models package. And controllers doesn't have any extra restrictions other than already imposed by default package rule.

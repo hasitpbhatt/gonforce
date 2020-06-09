@@ -1,7 +1,7 @@
 package: github.com/hasitpbhatt/gonforce
 
 default:
-  type: whitelist
+  type: allowlist
   imports:
     - fmt
     - gopkg.in

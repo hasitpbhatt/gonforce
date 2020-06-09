@@ -38,10 +38,10 @@ go build -o gonforce
 
 run_test "no_gonforce_file" 1
 run_test "invalid_gonforce_file" 1
-run_test "using_blacklisted_import" 1
-run_test "using_not_whitelisted_import" 1
-run_test "using_whitelist_exception" 1
-run_test "failed_whitelist_exception" 1
+run_test "using_blocklisted_import" 1
+run_test "using_not_allowlisted_import" 1
+run_test "using_allowlist_exception" 1
+run_test "failed_allowlist_exception" 1
 run_test "invalid_rule_structure" 1
 run_test "invalid_import_in_subdir" 1
 run_test "subfolder_using_invalid_import" 1

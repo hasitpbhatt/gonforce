@@ -13,13 +13,13 @@ func TestPackageRule_Validate(t *testing.T) {
 		fields  fields
 		wantErr bool
 	}{
-		{"whitelist", fields{Type: "whitelist"}, false},
-		{"blacklist", fields{Type: "blacklist"}, false},
+		{"allowlist", fields{Type: "allowlist"}, false},
+		{"blocklist", fields{Type: "blocklist"}, false},
 		{"random_type", fields{Type: "random_type"}, true},
 		{
 			"conflicting import and exceptions",
 			fields{
-				Type:    "whitelist",
+				Type:    "allowlist",
 				Imports: []string{"a", "b"},
 				Except:  []string{"b"},
 			},
@@ -28,7 +28,7 @@ func TestPackageRule_Validate(t *testing.T) {
 		{
 			"valid import and exceptions",
 			fields{
-				Type:    "whitelist",
+				Type:    "allowlist",
 				Imports: []string{"a", "b"},
 				Except:  []string{"a/b", "b/a", "a/a"},
 			},
