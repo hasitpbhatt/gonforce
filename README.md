@@ -1,6 +1,14 @@
 # gonforce
 Gonforce ( Read as Go Enforce ) enforces the given package follows the guidelines defined in "gonforce.yaml" file.
 
+# Install
+
+```
+go get -u github.com/hasitpbhatt/gonforce
+```
+Once installed, use gonforce command in the package containing "gonforce.yaml"
+
+# Samples
 Sample files may look something like the following
 
 1. Default Blacklist
